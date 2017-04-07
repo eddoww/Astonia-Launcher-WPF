@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>A3Launcher</id>
+    <!-- version will be replaced by MSBuild -->
+    <version>2.1.0.2</version>
+    <title>A3Launcher</title>
+    <authors>Ugaris Inc</authors>
+    <description>Universal Launcher for Astonia Servers</description>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <copyright>Copyright Ugaris Inc ©  2017</copyright>
+    <dependencies />
+    <iconUrl>http://ugaris.com/launcher/TullyHouse.ico</iconUrl>
+  </metadata>
+  <files>
+    <file src="A3Launcher.exe" target="lib\net45\" exclude="*.pdb;*.nupkg;*.vshost.*"/>
+    <file src="Resources/Accounts.json" target="lib\net45\Resources\" exclude="*.pdb;*.nupkg;*.vshost.*"/>
+    <file src="Resources/fullscreenfix.sdb" target="lib\net45\Resources\" exclude="*.pdb;*.nupkg;*.vshost.*"/>
+  </files>
+</package>
