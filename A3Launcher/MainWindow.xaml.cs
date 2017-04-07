@@ -33,7 +33,7 @@ namespace A3Launcher
 #if !DEBUG
      Update();
 #endif
-            LblVersionLbl.Content = Assembly.GetEntryAssembly().GetName().Version;
+            LblVersionLbl.Content = "V" +Assembly.GetEntryAssembly().GetName().Version;
         }
 
         static async void Update()
