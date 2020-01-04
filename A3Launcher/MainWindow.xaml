@@ -1,67 +1,91 @@
 ﻿<Custom:MetroWindow
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:Custom="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:self="clr-namespace:A3Launcher.Classes"
-        xmlns:Dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-        xmlns:p="clr-namespace:A3Launcher.Properties"
-        x:Class="A3Launcher.MainWindow"
-        GlowBrush="{DynamicResource AccentColorBrush}"
-    Title="A3 Launcher" Height="631.925" Width="791.057" ResizeMode="NoResize" ShowMinButton="False" ShowMaxRestoreButton="False" WindowStartupLocation="CenterScreen" Closing="MetroWindow_Closing" Icon="Resources/images/Tully House-96.png">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:Custom="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:self="clr-namespace:A3Launcher.Classes"
+    xmlns:Dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+    xmlns:p="clr-namespace:A3Launcher.Properties"
+    x:Class="A3Launcher.MainWindow"
+    GlowBrush="{DynamicResource AccentColorBrush}"
+    Title="A3 Launcher" Height="631.925" Width="791.057" ResizeMode="NoResize" ShowMinButton="False"
+    ShowMaxRestoreButton="False" WindowStartupLocation="CenterScreen" Closing="MetroWindow_Closing"
+    Icon="Resources/images/Tully House-96.png">
     <Grid>
-        <Custom:MetroTabControl HorizontalAlignment="Left"  VerticalAlignment="Top" FontSize="14" Custom:TabControlHelper.IsUnderlined="True" Margin="10,10,0,0" Height="583" Width="765">
+        <Custom:MetroTabControl HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14"
+                                Custom:TabControlHelper.IsUnderlined="True" Margin="10,10,0,0" Height="583" Width="765">
             <TabItem Header="Main">
                 <Grid Background="#FFE5E5E5" Margin="0,0,0,0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="104*"/>
-                        <ColumnDefinition Width="35"/>
-                        <ColumnDefinition Width="459*"/>
+                        <ColumnDefinition Width="104*" />
+                        <ColumnDefinition Width="35" />
+                        <ColumnDefinition Width="459*" />
                     </Grid.ColumnDefinitions>
-                    <GroupBox Header="Info" HorizontalAlignment="Left" Height="297" Margin="143,10,0,0" VerticalAlignment="Top" Width="373" Grid.Column="2">
+                    <GroupBox Header="Info" HorizontalAlignment="Left" Height="297" Margin="143,10,0,0"
+                              VerticalAlignment="Top" Width="373" Grid.Column="2">
                         <StackPanel Margin="10,10,-2,-29" Orientation="Vertical">
                             <StackPanel Orientation="Horizontal" Margin="0">
-                                <Label Content="Character Name:&#xA;" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="118" Margin="0,0,10,0"/>
-                                <Label x:Name="LblCharNameValue" Content="N/A" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="210"/>
+                                <Label Content="Character Name:&#xA;" HorizontalAlignment="Left"
+                                       VerticalAlignment="Top" Height="30" Width="118" Margin="0,0,10,0" />
+                                <Label x:Name="LblCharNameValue" Content="N/A" HorizontalAlignment="Left"
+                                       VerticalAlignment="Top" Height="30" Width="210" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
-                                <Label Content="Level:&#xA;" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="118" Margin="0,0,10,0"/>
-                                <Label x:Name="LblCharLevelValue" Content="N/A" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="210"/>
+                                <Label Content="Level:&#xA;" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                       Height="30" Width="118" Margin="0,0,10,0" />
+                                <Label x:Name="LblCharLevelValue" Content="N/A" HorizontalAlignment="Left"
+                                       VerticalAlignment="Top" Height="30" Width="210" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0">
-                                <Label Content="Class:&#xA;" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="118" Margin="0,0,10,0"/>
-                                <Label x:Name="LblCharClassValue" Content="N/A" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="210"/>
+                                <Label Content="Class:&#xA;" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                       Height="30" Width="118" Margin="0,0,10,0" />
+                                <Label x:Name="LblCharClassValue" Content="N/A" HorizontalAlignment="Left"
+                                       VerticalAlignment="Top" Height="30" Width="210" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0">
-                                <Label Content="Location: " HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="118" Margin="0,0,10,0"/>
-                                <Label x:Name="LblCharLocationValue" Content="N/A" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="210"/>
+                                <Label Content="Hardcore: " HorizontalAlignment="Left" VerticalAlignment="Top"
+                                       Height="30" Width="118" Margin="0,0,10,0" Visibility="Hidden" />
+                                <Label x:Name="Lblhardcore" Content="N/A" HorizontalAlignment="Left"
+                                       VerticalAlignment="Top" Height="30" Width="210" Visibility="Hidden" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0">
-                                <Label Content="Last Seen:&#xA;" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="118" Margin="0,0,10,0"/>
-                                <Label x:Name="LblCharLastSeenValue" Content="N/A" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="210"/>
+                                <Label Content="Last Seen:&#xA;" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                       Height="30" Width="118" Margin="0,0,10,0" />
+                                <Label x:Name="LblCharLastSeenValue" Content="N/A" HorizontalAlignment="Left"
+                                       VerticalAlignment="Top" Height="30" Width="210" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0">
-                                <Label Content="Creation Date:&#xA;" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="118" Margin="0,0,10,0"/>
-                                <Label x:Name="LblCharCreationDateValue" Content="N/A" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="210"/>
+                                <Label Content="Creation Date:&#xA;" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                       Height="30" Width="118" Margin="0,0,10,0" />
+                                <Label x:Name="LblCharCreationDateValue" Content="N/A" HorizontalAlignment="Left"
+                                       VerticalAlignment="Top" Height="30" Width="210" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0">
-                                <Label Content="Clan Name:" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="118" Margin="0,0,10,0"/>
-                                <Label x:Name="LblCharClanNameValue" Content="N/A" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="210"/>
+                                <Label Content="Clan Name:" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                       Height="30" Width="118" Margin="0,0,10,0" />
+                                <Label x:Name="LblCharClanNameValue" Content="N/A" HorizontalAlignment="Left"
+                                       VerticalAlignment="Top" Height="30" Width="210" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0">
-                                <Label Content="Clan Rank:" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="118" Margin="0,0,10,0"/>
-                                <Label x:Name="LblCharClanRankValue" Content="N/A" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="210"/>
+                                <Label Content="Clan Rank:" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                       Height="30" Width="118" Margin="0,0,10,0" />
+                                <Label x:Name="LblCharClanRankValue" Content="N/A" HorizontalAlignment="Left"
+                                       VerticalAlignment="Top" Height="30" Width="210" />
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>
-                    <TreeView x:Name="AccountTree" HorizontalAlignment="Left" Height="420" Margin="10,10,0,0" VerticalAlignment="Top" Width="257" TreeViewItem.Selected="OnItemSelect" Grid.ColumnSpan="3"
+                    <TreeView x:Name="AccountTree" HorizontalAlignment="Left" Height="420" Margin="10,10,0,0"
+                              VerticalAlignment="Top" Width="257" TreeViewItem.Selected="OnItemSelect"
+                              Grid.ColumnSpan="3"
                               Grid.Column="0">
                         <TreeView.Resources>
-                            <HierarchicalDataTemplate DataType="{x:Type self:Account}" ItemsSource="{Binding CharacterList}">
+                            <HierarchicalDataTemplate DataType="{x:Type self:Account}"
+                                                      ItemsSource="{Binding CharacterList}">
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Margin="0,0,5,0" Height="16" Width="16" Source="Resources/images/account.png" />
+                                    <Image Margin="0,0,5,0" Height="16" Width="16"
+                                           Source="Resources/images/account.png" />
                                     <TextBlock Text="{Binding Name}" />
                                     <TextBlock Text=" [" Foreground="Blue" />
                                     <TextBlock Text="{Binding Characters}" Foreground="Blue" />
@@ -73,99 +97,134 @@
                             </HierarchicalDataTemplate>
                             <DataTemplate DataType="{x:Type self:Character}">
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Margin="0,0,5,0" Source="Resources/images/character_male.png" Height="16" Width="16" />
+                                    <Image Margin="0,0,5,0" Source="Resources/images/character_male.png" Height="16"
+                                           Width="16" />
                                     <TextBlock Text="{Binding name}" />
                                     <TextBlock Text=" (LVL: " Foreground="Green" />
-                                    <TextBlock Text="{Binding experience}" Foreground="Green" />
+                                    <TextBlock Text="{Binding level}" Foreground="Green" />
                                     <TextBlock Text=" )" Foreground="Green" />
                                 </StackPanel>
                             </DataTemplate>
                         </TreeView.Resources>
                     </TreeView>
-                    <Button Content="Play" HorizontalAlignment="Left" Margin="143,312,0,0" VerticalAlignment="Top" Width="373" Height="79" Click="Button_Click" Grid.Column="2"/>
+                    <Button x:Name="BtnPlay" Content="Play" HorizontalAlignment="Left" Margin="143,312,0,0"
+                            VerticalAlignment="Top" Width="179" Height="42" Click="BtnPlay_Click" Grid.Column="2" />
+                    <Button x:Name="BtnPlayWindowed" Content="Play Windowed" HorizontalAlignment="Left"
+                            Margin="337,312,0,0" VerticalAlignment="Top" Width="179" Height="42"
+                            Click="BtnPlayWindowed_Click" Grid.Column="2" />
+                    <Button x:Name="BtnPlay_Multi" Content="Play(multi)" HorizontalAlignment="Left"
+                            Margin="143,359,0,0" VerticalAlignment="Top" Width="179" Height="42"
+                            Click="BtnPlay_Multi_Click" Grid.Column="2" />
+                    <Button x:Name="BtnPlayWindowed_Multi" Content="Play Windowed(multi)" HorizontalAlignment="Left"
+                            Margin="337,359,0,0" VerticalAlignment="Top" Width="179" Height="42"
+                            Click="BtnPlayWindowed_Multi_Click" Grid.Column="2" />
                 </Grid>
             </TabItem>
             <TabItem Header="Accounts">
                 <Grid Background="#FFE5E5E5">
-                    <DataGrid x:Name="AccountsDataGrid" HorizontalAlignment="Left" Height="400" Margin="10,10,0,0" VerticalAlignment="Top" Width="543" AutoGenerateColumns="False" CanUserResizeColumns="False" GridLinesVisibility="All" CanUserAddRows="False">
+                    <DataGrid x:Name="AccountsDataGrid" HorizontalAlignment="Left" Height="400" Margin="10,10,0,0"
+                              VerticalAlignment="Top" Width="543" AutoGenerateColumns="False"
+                              CanUserResizeColumns="False" GridLinesVisibility="All" CanUserAddRows="False">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Header="LoginId">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Path=LoginId}"/>
+                                        <TextBlock Text="{Binding Path=LoginId}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
                             <DataGridTemplateColumn Header="Name">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Path=Name}"/>
+                                        <TextBlock Text="{Binding Path=Name}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
                             <DataGridTemplateColumn Header="Email">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Path=Email}"/>
+                                        <TextBlock Text="{Binding Path=Email}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
                             <DataGridTemplateColumn Header="Characters">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Path=Characters}"/>
+                                        <TextBlock Text="{Binding Path=Characters}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
                             <DataGridTemplateColumn Header="Server:">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Path=Server}"/>
+                                        <TextBlock Text="{Binding Path=Server}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
                             <DataGridTemplateColumn Header="Added On:">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Path=AddedOn}"/>
+                                        <TextBlock Text="{Binding Path=AddedOn}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <Button x:Name="BtnAddAccount" Content="Add Account" HorizontalAlignment="Left" Margin="10,415,0,0" VerticalAlignment="Top" Width="100" Click="BtnAddAccount_Click"/>
-                    <Button x:Name="BtnEditAccount" Content="Edit Account" HorizontalAlignment="Left" Margin="115,415,0,0" VerticalAlignment="Top" Width="100" Click="BtnEditAccount_Click"/>
-                    <Button x:Name="BtnRemoveAccount" Content="Remove Account" HorizontalAlignment="Left" Margin="220,415,0,0" VerticalAlignment="Top" Width="100" Click="BtnRemoveAccount_Click"/>
-                    <Button x:Name="BtnRefreshAccounts" Content="Refresh Accounts" HorizontalAlignment="Left" Margin="558,109,0,0" VerticalAlignment="Top" Width="116" Click="BtnRefreshAccounts_Click"/>
-                    <ProgressBar x:Name="RefreshBar" HorizontalAlignment="Left" Margin="558,80,0,0" VerticalAlignment="Top" Width="197" Height="24"/>
-                    <TextBlock x:Name="TxBlProgress" HorizontalAlignment="Left" Margin="591,56,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <Button x:Name="BtnAddAccount" Content="Add Account" HorizontalAlignment="Left" Margin="10,415,0,0"
+                            VerticalAlignment="Top" Width="100" Click="BtnAddAccount_Click" />
+                    <Button x:Name="BtnEditAccount" Content="Edit Account" HorizontalAlignment="Left"
+                            Margin="115,415,0,0" VerticalAlignment="Top" Width="100" Click="BtnEditAccount_Click" />
+                    <Button x:Name="BtnRemoveAccount" Content="Remove Account" HorizontalAlignment="Left"
+                            Margin="220,415,0,0" VerticalAlignment="Top" Width="100" Click="BtnRemoveAccount_Click" />
+                    <Button x:Name="BtnRefreshAccounts" Content="Refresh Accounts" HorizontalAlignment="Left"
+                            Margin="558,109,0,0" VerticalAlignment="Top" Width="116" Click="BtnRefreshAccounts_Click" />
+                    <ProgressBar x:Name="RefreshBar" HorizontalAlignment="Left" Margin="558,80,0,0"
+                                 VerticalAlignment="Top" Width="197" Height="24" />
+                    <TextBlock x:Name="TxBlProgress" HorizontalAlignment="Left" Margin="591,56,0,0" TextWrapping="Wrap"
+                               VerticalAlignment="Top" />
                 </Grid>
             </TabItem>
             <TabItem Header="Settings">
                 <Grid Background="#FFE5E5E5">
-                    <Label Content="Ugaris" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top"/>
-                    <TextBox x:Name="TxtUgarisPath" HorizontalAlignment="Left" Height="23" Margin="80,51,0,0" Text="{Binding Source={x:Static p:Settings.Default},Path=ugaris_path, Mode=TwoWay}" VerticalAlignment="Top" Width="200" IsEnabled="False"/>
-                    <Button x:Name="BtnUgarisBrowse" Content="Browse" HorizontalAlignment="Left" Margin="297,50,0,0" VerticalAlignment="Top" Width="75" Click="BtnUgarisBrowse_Click"/>
+                    <Label Content="Ugaris" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" />
+                    <TextBox x:Name="TxtUgarisPath" HorizontalAlignment="Left" Height="23" Margin="80,51,0,0"
+                             Text="{Binding Source={x:Static p:Settings.Default},Path=ugaris_path, Mode=TwoWay}"
+                             VerticalAlignment="Top" Width="200" IsEnabled="False" />
+                    <Button x:Name="BtnUgarisBrowse" Content="Browse" HorizontalAlignment="Left" Margin="297,50,0,0"
+                            VerticalAlignment="Top" Width="75" Click="BtnUgarisBrowse_Click" />
 
-                    <Label Content="A3Res" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top"/>
-                    <TextBox x:Name="TxtAresPath" HorizontalAlignment="Left" Height="23" Margin="80,81,0,0" Text="{Binding Source={x:Static p:Settings.Default},Path=a3res_path, Mode=TwoWay}" VerticalAlignment="Top" Width="200" IsEnabled="False"/>
-                    <Button Content="Browse" HorizontalAlignment="Left" Margin="297,80,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False"/>
+                    <Label Content="A3Res" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" />
+                    <TextBox x:Name="TxtAresPath" HorizontalAlignment="Left" Height="23" Margin="80,81,0,0"
+                             Text="{Binding Source={x:Static p:Settings.Default},Path=a3res_path, Mode=TwoWay}"
+                             VerticalAlignment="Top" Width="200" IsEnabled="False" />
+                    <Button Content="Browse" HorizontalAlignment="Left" Margin="297,80,0,0" VerticalAlignment="Top"
+                            Width="75" IsEnabled="False" />
 
-                    <Label Content="Reborn" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top"/>
-                    <TextBox x:Name="TxtRebornPath" HorizontalAlignment="Left" Height="23" Margin="80,111,0,0" Text="{Binding Source={x:Static p:Settings.Default},Path=reborn_path, Mode=TwoWay}" VerticalAlignment="Top" Width="200" IsEnabled="False"/>
-                    <Button Content="Browse" HorizontalAlignment="Left" Margin="297,110,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False"/>
+                    <Label Content="Reborn" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" />
+                    <TextBox x:Name="TxtRebornPath" HorizontalAlignment="Left" Height="23" Margin="80,111,0,0"
+                             Text="{Binding Source={x:Static p:Settings.Default},Path=reborn_path, Mode=TwoWay}"
+                             VerticalAlignment="Top" Width="200" IsEnabled="False" />
+                    <Button Content="Browse" HorizontalAlignment="Left" Margin="297,110,0,0" VerticalAlignment="Top"
+                            Width="75" IsEnabled="False" />
 
-                    <Label Content="Invicta" HorizontalAlignment="Left" Margin="10,140,0,0" VerticalAlignment="Top"/>
-                    <TextBox x:Name="TxtInvicPath" HorizontalAlignment="Left" Height="23" Margin="80,141,0,0" Text="{Binding Source={x:Static p:Settings.Default},Path=invicta_path, Mode=TwoWay}" VerticalAlignment="Top" Width="200" IsEnabled="False"/>
-                    <Button Content="Browse" HorizontalAlignment="Left" Margin="297,140,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False"/>
-                    <Button x:Name="BtnFullScreenFix" Content="Magic Fullscreen Fix Button" HorizontalAlignment="Left" Margin="10,233,0,0" VerticalAlignment="Top" Width="215" Click="BtnFullScreenFix_Click"/>
+                    <Label Content="Invicta" HorizontalAlignment="Left" Margin="10,140,0,0" VerticalAlignment="Top" />
+                    <TextBox x:Name="TxtInvicPath" HorizontalAlignment="Left" Height="23" Margin="80,141,0,0"
+                             Text="{Binding Source={x:Static p:Settings.Default},Path=invicta_path, Mode=TwoWay}"
+                             VerticalAlignment="Top" Width="200" IsEnabled="False" />
+                    <Button Content="Browse" HorizontalAlignment="Left" Margin="297,140,0,0" VerticalAlignment="Top"
+                            Width="75" IsEnabled="False" />
+                    <Button x:Name="BtnFullScreenFix" Content="Magic Fullscreen Fix Button" HorizontalAlignment="Left"
+                            Margin="10,233,0,0" VerticalAlignment="Top" Width="215" Click="BtnFullScreenFix_Click" />
                 </Grid>
             </TabItem>
             <TabItem Header="About">
                 <Grid Background="#FFE5E5E5">
-                    <TextBlock HorizontalAlignment="Left" Margin="10,100,0,0" TextWrapping="Wrap" Text="A3Launcher created by Eddow - Administrator at Ugaris" VerticalAlignment="Top"/>
-                    <Label x:Name="LblVersionLbl" Content="Version:" HorizontalAlignment="Left" Margin="10,502,0,0" VerticalAlignment="Top"/>
-                    <TextBlock xmlns:ref="clr-namespace:System.Reflection;assembly=mscorlib" Margin="80,507,617,10" Text="{Binding AssemblyVersion}"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,100,0,0" TextWrapping="Wrap"
+                               Text="A3Launcher created by Eddow - Administrator at Ugaris" VerticalAlignment="Top" />
+                    <Label x:Name="LblVersionLbl" Content="Version:" HorizontalAlignment="Left" Margin="10,502,0,0"
+                           VerticalAlignment="Top" />
+                    <TextBlock xmlns:ref="clr-namespace:System.Reflection;assembly=mscorlib" Margin="80,507,617,10"
+                               Text="{Binding AssemblyVersion}" />
                 </Grid>
             </TabItem>
         </Custom:MetroTabControl>

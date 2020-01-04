@@ -2,7 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="A3Launcher.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="ugaris_path" Type="System.String" Scope="User">
+    <Setting Name="ugaris_path" GenerateDefaultValueInCode="false" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Ugaris</Value>
     </Setting>
     <Setting Name="a3res_path" Type="System.String" Scope="User">

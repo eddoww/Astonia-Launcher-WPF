@@ -6,7 +6,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Reflection;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using A3Launcher.Properties;
@@ -14,6 +16,7 @@ using Newtonsoft.Json;
 using A3Launcher.Classes;
 using Squirrel;
 using MessageBox = System.Windows.MessageBox;
+using MySql.Data.MySqlClient;
 
 namespace A3Launcher
 {
@@ -23,17 +26,30 @@ namespace A3Launcher
     public partial class MainWindow
     {
         BackgroundWorker Worker = new BackgroundWorker();
-        ObservableCollection<Account> accounts = JsonConvert.DeserializeObject<ObservableCollection<Account>>(File.ReadAllText(AccountJsonFile));
+        
+        ObservableCollection<Account> accounts =
+            JsonConvert.DeserializeObject<ObservableCollection<Account>>(File.ReadAllText(AccountJsonFile));
+
         public static string ResourcePath = Directory.GetCurrentDirectory() + "\\Resources\\";
         public static string AccountJsonFile = ResourcePath + "accounts.json";
+
         public MainWindow()
         {
             InitializeComponent();
             LoadAccounts();
 #if !DEBUG
-     Update();
+
+            try
+            {
+                Update();
+            }
+            catch (Exception er)
+            {
+
+                logger("Error with updating: " + er);
+            }
 #endif
-            LblVersionLbl.Content = "V" +Assembly.GetEntryAssembly().GetName().Version;
+            LblVersionLbl.Content = "V" + Assembly.GetEntryAssembly().GetName().Version;
         }
 
         static async void Update()
@@ -43,32 +59,7 @@ namespace A3Launcher
                 await mgr.UpdateApp();
             }
         }
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (File.Exists(TxtUgarisPath.Text + "/moac.exe"))
-            {
-                try
-                {
-                    Character character = (Character)AccountTree.SelectedItem;
-                    //System.Diagnostics.Process.Start(txta3path.Text + "/moac.exe", string.Format("-u {0} -p {1}", "eddow", "123456"));
-                    ProcessStartInfo _processStartInfo = new ProcessStartInfo();
-                    _processStartInfo.WorkingDirectory = TxtUgarisPath.Text;  //select path based on server
-                    _processStartInfo.FileName = @"moac.exe";
-                    _processStartInfo.Arguments = string.Format("-u {0} -p {1}", character.name, character.Password);
-                    //MessageBox.Show(_processStartInfo + character.name + character.sID + accinfo);
-                    Process myProcess = Process.Start(_processStartInfo);
-                }
-                catch (Exception ex)
-                {
 
-                    logger(ex.ToString());
-                }
-            }
-            else
-            {
-                MessageBox.Show("Could not find moac.exe in specified folder.");
-            }
-        }
         private void LoadAccounts()
         {
             AccountTree.ItemsSource = accounts;
@@ -79,19 +70,20 @@ namespace A3Launcher
         {
             var json = JsonConvert.SerializeObject(accounts, Formatting.Indented);
             File.WriteAllText(AccountJsonFile, json);
-            Properties.Settings.Default.Save();
+            //Properties.Settings.Default.Save();
         }
+
         private void OnItemSelect(object sender, RoutedEventArgs routedEventArgs)
         {
             try
             {
-                Character character = (Character)AccountTree.SelectedItem;
+                Character character = (Character) AccountTree.SelectedItem;
                 LblCharNameValue.Content = character.name;
-                LblCharLevelValue.Content = character.experience;
-                LblCharClassValue.Content = character.@class;
-                LblCharLocationValue.Content = character.current_area;
-                LblCharCreationDateValue.Content = character.creation_time;
-                LblCharLastSeenValue.Content = character.login_time;
+                LblCharLevelValue.Content = character.level;
+                LblCharClassValue.Content = character.@class2;
+                Lblhardcore.Content = character.IsHardcore;
+                LblCharCreationDateValue.Content = character.creation_time_dt.ToLocalTime();
+                LblCharLastSeenValue.Content = character.login_time_dt.ToLocalTime();
                 LblCharClanRankValue.Content = character.clan_rank;
                 LblCharClanNameValue.Content = character.clan;
             }
@@ -103,10 +95,9 @@ namespace A3Launcher
 
         private void BtnAddAccount_Click(object sender, RoutedEventArgs e)
         {
-            try
+           try
             {
-                AddAccount AddAccWindow = new AddAccount();
-                AddAccWindow.Owner = this;
+                AddAccount AddAccWindow = new AddAccount {Owner = this};
                 AddAccWindow.ShowDialog();
                 if (AddAccWindow.DialogResult.HasValue && AddAccWindow.DialogResult.Value)
                 {
@@ -115,8 +106,8 @@ namespace A3Launcher
                     switch (AddAccWindow.CmbServer.Text)
                     {
                         case "Ugaris":
-                            apiurl = "http://ugaris.com/api/launcher.php";
-                            supersecretstring = "";
+                            apiurl = "https://ugaris.com/api/launcher.php";
+                            supersecretstring = "839hqfiugbf8792398ahdoland8y23fg76481920jenaghbxnmkz9978g";
                             break;
                         case "A3Res":
                             apiurl = "http://a3res.com/api/launcher.php";
@@ -131,15 +122,20 @@ namespace A3Launcher
                             supersecretstring = "";
                             break;
                         default:
-                            apiurl = "http://ugaris.com/api/launcher.php";
-                            supersecretstring = "";
+                            apiurl = "https://ugaris.com/api/launcher.php";
+                            supersecretstring = "839hqfiugbf8792398ahdoland8y23fg76481920jenaghbxnmkz9978g";
                             break;
                     }
                     Account NewAccount = new Account();
+                    string passhash =
+                        Convert.ToBase64String(
+                            new System.Security.Cryptography.SHA256Managed().ComputeHash(
+                                Encoding.UTF8.GetBytes(AddAccWindow.TxtAccPassword.Text)));
+
                     NewAccount.CharacterList =
                         GetAccountCharactersJson(string.Format(
                             "{0}?Login={1}&password={2}&sprsecret={3}", apiurl,
-                            AddAccWindow.TxtAccId.Text, AddAccWindow.TxtAccPassword.Text, supersecretstring));
+                            AddAccWindow.TxtAccId.Text, passhash, supersecretstring));
                     NewAccount.LoginId = Int32.Parse(AddAccWindow.TxtAccId.Text);
                     NewAccount.Password = AddAccWindow.TxtAccPassword.Text;
                     NewAccount.Name = AddAccWindow.TxtAccName.Text;
@@ -161,28 +157,31 @@ namespace A3Launcher
             }
             catch (WebException er)
             {
-                MessageBox.Show("There was an error with the API, Contact the server owner or check your internet connection");
+                MessageBox.Show(
+                    "There was an error with the API, Contact the server owner or check your internet connection");
                 logger(er.ToString());
             }
             catch (Exception er)
             {
-                MessageBox.Show("An error occured, please try again. If error persists please contact Server Owner. error: " + er);
+                MessageBox.Show(
+                    "An error occured, please try again. If error persists please contact Server Owner. error: " + er);
                 logger(er.ToString());
             }
         }
 
         private void BtnEditAccount_Click(object sender, RoutedEventArgs e)
         {
-
             try
             {
-                Account EditAcc = (Account)AccountsDataGrid.SelectedItem;
-                AddAccount AddAccWindow = new AddAccount();
-                AddAccWindow.Owner = this;
-                AddAccWindow.TxtAccName.Text = EditAcc.Name;
-                AddAccWindow.TxtAccId.Text = EditAcc.LoginId.ToString();
-                AddAccWindow.TxtAccEmail.Text = EditAcc.Email;
-                AddAccWindow.TxtAccPassword.Text = EditAcc.Password;
+                Account EditAcc = (Account) AccountsDataGrid.SelectedItem;
+                AddAccount AddAccWindow = new AddAccount
+                {
+                    Owner = this,
+                    TxtAccName = {Text = EditAcc.Name},
+                    TxtAccId = {Text = EditAcc.LoginId.ToString()},
+                    TxtAccEmail = {Text = EditAcc.Email},
+                    TxtAccPassword = {Text = EditAcc.Password}
+                };
                 AddAccWindow.ShowDialog();
 
                 if (AddAccWindow.DialogResult.HasValue && AddAccWindow.DialogResult.Value)
@@ -192,8 +191,8 @@ namespace A3Launcher
                     switch (AddAccWindow.CmbServer.Text)
                     {
                         case "Ugaris":
-                            apiurl = "http://ugaris.com/api/launcher.php";
-                            supersecretstring = "";
+                            apiurl = "https://ugaris.com/api/launcher.php";
+                            supersecretstring = "839hqfiugbf8792398ahdoland8y23fg76481920jenaghbxnmkz9978g";
                             break;
                         case "A3Res":
                             apiurl = "http://a3res.com/api/launcher.php";
@@ -208,18 +207,26 @@ namespace A3Launcher
                             supersecretstring = "";
                             break;
                         default:
-                            apiurl = "http://ugaris.com/api/launcher.php";
+                            apiurl = "https://ugaris.com/api/launcher.php";
                             supersecretstring = "";
                             break;
                     }
-                    Account Changedacc = new Account();
-                    Changedacc.Name = AddAccWindow.TxtAccName.Text;
-                    Changedacc.LoginId = Int32.Parse(AddAccWindow.TxtAccId.Text);
-                    Changedacc.Email = AddAccWindow.TxtAccEmail.Text;
-                    Changedacc.Password = AddAccWindow.TxtAccPassword.Text;
-                    Changedacc.CharacterList = GetAccountCharactersJson(string.Format("{0}?Login={1}&password={2}&sprsecret={3}", apiurl, AddAccWindow.TxtAccId.Text, AddAccWindow.TxtAccPassword.Text, supersecretstring));
-                    Changedacc.Server = AddAccWindow.CmbServer.Text;
-                    Changedacc.AddedOn = DateTime.Now;
+                    string passhash =
+                        Convert.ToBase64String(
+                            new System.Security.Cryptography.SHA256Managed().ComputeHash(
+                                Encoding.UTF8.GetBytes(AddAccWindow.TxtAccPassword.Text)));
+                    Account Changedacc = new Account
+                    {
+                        Name = AddAccWindow.TxtAccName.Text,
+                        LoginId = Int32.Parse(AddAccWindow.TxtAccId.Text),
+                        Email = AddAccWindow.TxtAccEmail.Text,
+                        Password = AddAccWindow.TxtAccPassword.Text,
+                        CharacterList =
+                            GetAccountCharactersJson(string.Format("{0}?Login={1}&password={2}&sprsecret={3}", apiurl,
+                                AddAccWindow.TxtAccId.Text, passhash, supersecretstring)),
+                        Server = AddAccWindow.CmbServer.Text,
+                        AddedOn = DateTime.Now
+                    };
 
                     accounts.Remove(EditAcc);
                     accounts.Add(Changedacc);
@@ -231,22 +238,19 @@ namespace A3Launcher
             }
             catch (Exception er)
             {
-
                 logger(er.ToString());
             }
-
         }
 
         private void BtnRemoveAccount_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Account RemAcc = (Account)AccountsDataGrid.SelectedItem;
+                Account RemAcc = (Account) AccountsDataGrid.SelectedItem;
                 accounts.Remove(RemAcc);
             }
             catch (Exception er)
             {
-
                 logger(er.ToString());
             }
         }
@@ -260,7 +264,6 @@ namespace A3Launcher
             }
             else
             {
-
                 try
                 {
                     File.AppendAllText("log.log", $"{now.ToLocalTime()} : {message}\r\n");
@@ -272,10 +275,14 @@ namespace A3Launcher
                 }
             }
         }
+
         private List<Character> GetAccountCharactersJson(string uri)
         {
-            var webRequest = (HttpWebRequest)WebRequest.Create(uri);
-            var webResponse = (HttpWebResponse)webRequest.GetResponse();
+            var webRequest = (HttpWebRequest) WebRequest.Create(uri);
+            webRequest.UserAgent =
+                @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36";
+            webRequest.Accept = "1";
+            var webResponse = (HttpWebResponse) webRequest.GetResponse();
             var reader = new StreamReader(webResponse.GetResponseStream());
             string s = reader.ReadToEnd();
             return JsonConvert.DeserializeObject<List<Character>>(s);
@@ -293,16 +300,21 @@ namespace A3Launcher
 
         private void BtnRefreshAccounts_Click(object sender, RoutedEventArgs e)
         {
-            Worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
-            Worker.WorkerReportsProgress = true;
-            Worker.DoWork += Worker_DoWork;
-            Worker.ProgressChanged += Worker_ProgressChanged;
-            Worker.RunWorkerAsync();
+            // Worker.WorkerReportsProgress = true;
+            // Worker.DoWork += Worker_DoWork;
+            // Worker.ProgressChanged += Worker_ProgressChanged;
+            // Worker.RunWorkerAsync();
+            // Worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+            //Task t = new Task(RefreshAccounts);
+            //t.Start();
+            //t.Wait();
+            RefreshAccounts();
         }
+
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             RefreshBar.Value = e.ProgressPercentage;
-            TxBlProgress.Text = (string)e.UserState;
+            TxBlProgress.Text = (string) e.UserState;
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -310,6 +322,7 @@ namespace A3Launcher
             //RefreshBar.Value = 0;
             //TxBlProgress.Text = "";
         }
+
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             var worker = sender as BackgroundWorker;
@@ -336,8 +349,8 @@ namespace A3Launcher
                 switch (account.Server)
                 {
                     case "Ugaris":
-                        apiurl = "http://ugaris.com/api/launcher.php";
-                        supersecretstring = "";
+                        apiurl = "https://ugaris.com/api/launcher.php";
+                        supersecretstring = "839hqfiugbf8792398ahdoland8y23fg76481920jenaghbxnmkz9978g";
                         break;
                     case "A3Res":
                         apiurl = "http://a3res.com/api/launcher.php";
@@ -352,30 +365,35 @@ namespace A3Launcher
                         supersecretstring = "";
                         break;
                     default:
-                        apiurl = "http://ugaris.com/api/launcher.php";
+                        apiurl = "https://ugaris.com/api/launcher.php";
                         supersecretstring = "";
                         break;
                 }
                 try
                 {
+                    string passhash =
+                        Convert.ToBase64String(
+                            new System.Security.Cryptography.SHA256Managed().ComputeHash(
+                                Encoding.UTF8.GetBytes(account.Password)));
                     account.CharacterList =
-                GetAccountCharactersJson(string.Format("{0}?Login={1}&password={2}&sprsecret={3}",
-                    apiurl, account.LoginId, account.Password, supersecretstring));
+                        GetAccountCharactersJson(string.Format("{0}?Login={1}&password={2}&sprsecret={3}",
+                            apiurl, account.LoginId, passhash, supersecretstring));
                 }
                 catch (Exception er)
                 {
-
                     logger("Error in refreshing: " + er);
                 }
-                Worker.ReportProgress((current * 100) / total, String.Format("Refreshing Account {0}.", current + 2));
+                //Worker.ReportProgress((current * 100) / total, String.Format("Refreshing Account {0}.", current + 2));
             }
         }
 
         private void BtnFullScreenFix_Click(object sender, RoutedEventArgs e)
         {
-            ProcessStartInfo _processStartInfo = new ProcessStartInfo();
-            _processStartInfo.FileName = @"sdbinst.exe";
-            _processStartInfo.Arguments = $"-q \"Resources\fullscreenfix.sdb\"";
+            ProcessStartInfo _processStartInfo = new ProcessStartInfo
+            {
+                FileName = @"sdbinst.exe",
+                Arguments = $"-q \"Resources\fullscreenfix.sdb\""
+            };
             logger(_processStartInfo.Arguments);
             try
             {
@@ -383,8 +401,128 @@ namespace A3Launcher
             }
             catch (Exception er)
             {
-
                 logger(er.ToString());
+            }
+        }
+
+        private void BtnPlay_Click(object sender, RoutedEventArgs e)
+        {
+            if (File.Exists(TxtUgarisPath.Text + "/moac.exe"))
+            {
+                try
+                {
+                    Character character = (Character) AccountTree.SelectedItem;
+                    //System.Diagnostics.Process.Start(txta3path.Text + "/moac.exe", string.Format("-u {0} -p {1}", "eddow", "123456"));
+                    ProcessStartInfo _processStartInfo = new ProcessStartInfo
+                    {
+                        WorkingDirectory = TxtUgarisPath.Text,
+                        FileName = @"moac.exe",
+                        Arguments = string.Format("-u {0} -p {1}", character.name, character.Password)
+                    };
+                    //select path based on server
+                    //MessageBox.Show(_processStartInfo + character.name + character.sID + accinfo);
+                    Process myProcess = Process.Start(_processStartInfo);
+                }
+                catch (Exception ex)
+                {
+                    logger(ex.ToString());
+                }
+            }
+            else
+            {
+                MessageBox.Show("Could not find moac.exe in specified folder.");
+            }
+        }
+
+        private void BtnPlayWindowed_Click(object sender, RoutedEventArgs e)
+        {
+            if (File.Exists(TxtUgarisPath.Text + "/moac.exe"))
+            {
+                try
+                {
+                    Character character = (Character) AccountTree.SelectedItem;
+                    //System.Diagnostics.Process.Start(txta3path.Text + "/moac.exe", string.Format("-u {0} -p {1}", "eddow", "123456"));
+                    ProcessStartInfo _processStartInfo = new ProcessStartInfo
+                    {
+                        WorkingDirectory = TxtUgarisPath.Text,
+                        FileName = @"moac.exe",
+                        Arguments = string.Format("-u {0} -p {1} -w", character.name, character.Password)
+                    };
+                    //select path based on server
+                    //MessageBox.Show(_processStartInfo + character.name + character.sID + accinfo);
+                    Process myProcess = Process.Start(_processStartInfo);
+                }
+                catch (Exception ex)
+                {
+                    logger(ex.ToString());
+                }
+            }
+            else
+            {
+                MessageBox.Show("Could not find moac.exe in specified folder.");
+            }
+        }
+
+        private double ExpToLevel(int experience)
+        {
+            return Math.Floor(Math.Pow(experience + 1, 0.25));
+        }
+
+        private void BtnPlayWindowed_Multi_Click(object sender, RoutedEventArgs e)
+        {
+            if (File.Exists(TxtUgarisPath.Text + "/moac.exe"))
+            {
+                try
+                {
+                    Character character = (Character) AccountTree.SelectedItem;
+                    //System.Diagnostics.Process.Start(txta3path.Text + "/moac.exe", string.Format("-u {0} -p {1}", "eddow", "123456"));
+                    ProcessStartInfo _processStartInfo = new ProcessStartInfo
+                    {
+                        WorkingDirectory = TxtUgarisPath.Text,
+                        FileName = @"moac.exe",
+                        Arguments = string.Format("-u {0} -p {1} -w -x", character.name, character.Password)
+                    };
+                    //select path based on server
+                    //MessageBox.Show(_processStartInfo + character.name + character.sID + accinfo);
+                    Process myProcess = Process.Start(_processStartInfo);
+                }
+                catch (Exception ex)
+                {
+                    logger(ex.ToString());
+                }
+            }
+            else
+            {
+                MessageBox.Show("Could not find moac.exe in specified folder.");
+            }
+        }
+
+        private void BtnPlay_Multi_Click(object sender, RoutedEventArgs e)
+        {
+            if (File.Exists(TxtUgarisPath.Text + "/moac.exe"))
+            {
+                try
+                {
+                    Character character = (Character) AccountTree.SelectedItem;
+                    //System.Diagnostics.Process.Start(txta3path.Text + "/moac.exe", string.Format("-u {0} -p {1}", "eddow", "123456"));
+                    ProcessStartInfo _processStartInfo = new ProcessStartInfo
+                    {
+                        WorkingDirectory = TxtUgarisPath.Text,
+                        FileName = @"moac.exe",
+                        Arguments = string.Format("-u {0} -p {1} -x", character.name, character.Password)
+                    };
+                    //select path based on server
+                    //MessageBox.Show(_processStartInfo + character.name + character.sID + accinfo);
+                    Process myProcess = Process.Start(_processStartInfo);
+                }
+                catch (Exception ex)
+                {
+                    logger(ex.ToString());
+                }
+            }
+            else
+            {
+                MessageBox.Show("Could not find moac.exe in specified folder.");
             }
         }
     }

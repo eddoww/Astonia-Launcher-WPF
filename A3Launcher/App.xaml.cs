@@ -15,5 +15,4 @@ namespace A3Launcher
     public partial class App : Application
     {
     }
-
 }
